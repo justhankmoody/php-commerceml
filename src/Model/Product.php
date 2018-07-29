@@ -40,6 +40,12 @@ class Product extends Model
     public $price = [];
 
     /**
+     * @var array $warehouse
+     */
+
+    public $warehouse = [];
+
+    /**
      * @var array $categories
      */
     public $categories = [];
@@ -127,9 +133,18 @@ class Product extends Model
      */
     public function loadOffers($xml)
     {
+
         if ($xml->Количество) {
             $this->quantity = (int)$xml->Количество;
         }
+
+        if ($xml->Склад) {
+            foreach ($xml->Склад as $warehouse) {
+                $warehouse_uid = (string)$warehouse->attributes()->{'ИдСклада'};
+                $this->warehouse[$warehouse_uid] = $warehouse->attributes()->{'КоличествоНаСкладе'}->__toString();
+            }
+        }
+
 
         if ($xml->Цены) {
             foreach ($xml->Цены->Цена as $price) {
